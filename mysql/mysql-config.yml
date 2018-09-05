@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  labels: 
+    app: mysql
+data:
+  MYSQL_DATABASE: "polls"
+  MYSQL_USER: "sb"
+  MYSQL_HOST: "mysql.default"
+  MYSQL_PASSWORD: "isthisapassword"
