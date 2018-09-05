@@ -5,7 +5,7 @@ metadata:
   labels: 
     app: mysql
 data:
-  MYSQL_DATABASE: "polls"
+  MYSQL_DATABASE: "snippets"
   MYSQL_USER: "sb"
-  MYSQL_HOST: "mysql.default"
+  MYSQL_HOST: "127.0.0.1"
   MYSQL_PASSWORD: "isthisapassword"
