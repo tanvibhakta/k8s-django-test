@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: django 
+  labels:
+    app: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - image: tanvibhaktasb/django-polls
+          name: django
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: MYSQL_USER
+            - name: MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: MYSQL_HOST
+            - name: PYTHONUNBUFFERED
+              value: "0"
+          command: ["python3"]
+          args: ["manage.py", "runserver", "8000"]
+          ports:
+            - containerPort: 8000
+              name: django
+          volumeMounts:
+            - name: mysql-config
+              mountPath: /etc/config
+      volumes:
+        - name: mysql-config
+          configMap:
+            name: mysql-config
