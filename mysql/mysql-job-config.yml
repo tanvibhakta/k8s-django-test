@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-job-config
+  labels: 
+    app: drf
+data:
+  MYSQL_DATABASE: "snippets"
+  MYSQL_USER: "sb"
+  MYSQL_HOST: "10.11.244.180"  
+  MYSQL_PASSWORD: "isthisapassword"

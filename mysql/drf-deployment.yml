@@ -1,0 +1,71 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: drf  
+  labels:
+    app: drf  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drf  
+  template:
+    metadata:
+      labels:
+        app: drf  
+    spec:
+      containers:
+        - image: mariadb
+          name: mysql
+          args: ["--skip-name-resolve"]
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: password
+          envFrom:
+            - configMapRef:
+                name: mysql-config
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql/storage
+              subPath: storage
+            - name: mysql-config
+              mountPath: /etc/config
+        - image: tanvibhaktasb/django-drf  
+          name: django
+          tty: true
+          envFrom:
+          - configMapRef:
+              name: mysql-config
+          env: 
+            - name: LOAD_BALANCER_IP
+              value: 35.200.191.161
+          ports:
+            - containerPort: 8000
+              name: django
+          volumeMounts:
+            - name: mysql-config
+              mountPath: /etc/config
+        - name: nginx
+          image: nginx:1.14
+          ports:
+          - containerPort: 80
+          volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-volumeclaim
+        - name: mysql-config
+          configMap:
+            name: mysql-config
