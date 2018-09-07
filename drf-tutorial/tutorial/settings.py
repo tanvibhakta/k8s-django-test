@@ -80,12 +80,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('MYSQL_DATABASE'),
         'USER': os.getenv('MYSQL_USER'),
-        'PASSWORD': os.getenv('MYSQL_ROOT_PASSWORD'),
-#       'HOST': os.getenv('MYSQL_HOST'),
-        'HOST': '127.0.0.1', 
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+        'HOST': os.getenv('MYSQL_HOST'),
         'PORT': '3306',
-#       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#       'ENGINE': 'django.db.backends.sqlite3',
     }
 }
 
