@@ -2,33 +2,26 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: django-migrations
+  labels:
+    app: drf  
 spec:
   template:
+    metadata:
+      name: django-migrations
     spec:
       containers:
-        - name: django
+        - name: migrations
           image: tanvibhaktasb/django-drf:latest    
           command: ['python', 'manage.py', 'migrate']
-          env:
-            - name: MYSQL_DATABASE
-              valueFrom:
-                configMapKeyRef:
-                  name: mysql-config
-                  key: MYSQL_DATABASE
-            - name: MYSQL_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: mysql-config
-                  key: MYSQL_USER
-            - name: MYSQL_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: mysql-config
-                  key: MYSQL_HOST
-            - name: MYSQL_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: mysql-config
-                  key: MYSQL_PASSWORD
+          envFrom:
+          - configMapRef:
+              name: mysql-job-config
+          volumeMounts:
+            - name: mysql-job-config
+              mountPath: /etc/config
+      volumes:
+      - name: mysql-job-config
+        configMap:
+          name: mysql-job-config 
       restartPolicy: Never
   backoffLimit: 2
